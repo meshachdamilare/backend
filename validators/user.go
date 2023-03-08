@@ -11,7 +11,9 @@ var Validator = validator.New()
 
 func ValidateCreateUserSchema(c *fiber.Ctx) error {
 	body := new(helpers.InputCreateUser)
-	c.BodyParser(&body)
+	if err := c.BodyParser(&body); err != nil {
+		return helpers.SchemaError(c, err)
+	}
 
 	err := Validator.Struct(body)
 	if err != nil {
