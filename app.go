@@ -1,8 +1,10 @@
 package main
 
 import (
+	"quizard/constants"
 	"quizard/database"
 	"quizard/handlers"
+	"quizard/routes"
 
 	"flag"
 	"log"
@@ -10,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	_ "golang.org/x/text"
 )
 
 var (
@@ -18,11 +21,10 @@ var (
 )
 
 func main() {
+	constant := constants.New()
+
 	// Parse command-line flags
 	flag.Parse()
-
-	// Connected with database
-	database.Connect()
 
 	// Create fiber app
 	app := fiber.New(fiber.Config{
@@ -33,12 +35,20 @@ func main() {
 	app.Use(recover.New())
 	app.Use(logger.New())
 
-	// Create a /api/v1 endpoint
-	v1 := app.Group("/api/v1")
+	dbConfig := database.Config{
+		Host:     constant.DbHost,
+		Port:     constant.DbPort,
+		Password: constant.DbPassword,
+		User:     constant.DbUser,
+		DBName:   constant.DbName,
+	}
 
-	// Bind handlers
-	v1.Get("/users", handlers.UserList)
-	v1.Post("/users", handlers.UserCreate)
+	database.Connect(&dbConfig)
+
+	database.Migrate(database.DB)
+
+	// Bind routes
+	routes.Routes(app, database.DB)
 
 	// Setup static files
 	app.Static("/", "./static/public")
