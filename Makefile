@@ -2,7 +2,7 @@ project_name = Quizard
 image_name = Quizard:latest
 
 run-local:
-	air app.go
+	go fmt ./... && air app.go
 
 requirements:
 	go mod tidy

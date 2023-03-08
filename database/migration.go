@@ -13,7 +13,7 @@ const dbTimeout = time.Second * 3
 
 // this is a custom migration function i use for sql dbs
 func Migrate(db *gorm.DB) {
-	const TOTAL_WORKERS = 1
+	const TOTAL_WORKERS = 2
 	var (
 		wg      sync.WaitGroup
 		errorCh = make(chan error, TOTAL_WORKERS)
@@ -36,6 +36,29 @@ func Migrate(db *gorm.DB) {
 			name VARCHAR(255) NOT NULL,
 			email VARCHAR(255) NOT NULL,
 			password VARCHAR(255) NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			);`
+			err := db.Exec(query).Error
+			if err != nil {
+				errorCh <- err
+			}
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+		defer cancel()
+		// check if table exist before creating
+		tableExist, err := checkTableExist(ctx, db, "waitlist")
+		if err != nil {
+			errorCh <- err
+		}
+		if !tableExist {
+			query := `CREATE TABLE waitlist (
+			id SERIAL PRIMARY KEY,
+			email VARCHAR(255) NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 			);`

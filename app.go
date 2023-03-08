@@ -16,7 +16,6 @@ import (
 )
 
 var (
-	port = flag.String("port", ":3000", "Port to listen on")
 	prod = flag.Bool("prod", false, "Enable prefork in Production")
 )
 
@@ -56,6 +55,6 @@ func main() {
 	// Handle not founds
 	app.Use(handlers.NotFound)
 
-	// Listen on port 3000
-	log.Fatal(app.Listen(*port)) // go run app.go -port=:3000
+	// Listen on port set in .env
+	log.Fatal(app.Listen(constant.Port))
 }
