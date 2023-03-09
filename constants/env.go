@@ -36,11 +36,12 @@ func init() {
 
 func New() *Config {
 	return &Config{
-		DbHost:        getEnv("DB_HOST", ""),
-		DbUser:        getEnv("DB_USER", ""),
-		DbPassword:    getEnv("DB_PASSWORD", ""),
-		DbName:        getEnv("DB_NAME", ""),
-		DbPort:        getEnv("DB_PORT", ""),
+		DbHost:     getEnv("DB_HOST", ""),
+		DbUser:     getEnv("DB_USER", ""),
+		DbPassword: getEnv("DB_PASSWORD", ""),
+		DbName:     getEnv("DB_NAME", ""),
+		DbPort:     getEnv("DB_PORT", ""),
+		Port:       getEnv("PORT", ""),
 	}
 }
 
