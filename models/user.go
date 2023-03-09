@@ -7,3 +7,8 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type Waitlist struct {
+	Email string `json:"email"`
+	ID    uint   `gorm:"primarykey"`
+}
