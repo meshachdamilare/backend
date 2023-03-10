@@ -21,30 +21,7 @@ func Migrate(db *gorm.DB) {
 	wg.Add(TOTAL_WORKERS)
 	log.Println("running db migration :::::::::::::")
 
-	go func() {
-		defer wg.Done()
-		ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
-		defer cancel()
-		// check if table exist before creating
-		tableExist, err := checkTableExist(ctx, db, "users")
-		if err != nil {
-			errorCh <- err
-		}
-		if !tableExist {
-			query := `CREATE TABLE users (
-			id SERIAL PRIMARY KEY,
-			name VARCHAR(255) NOT NULL,
-			email VARCHAR(255) NOT NULL,
-			password VARCHAR(255) NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-			);`
-			err := db.Exec(query).Error
-			if err != nil {
-				errorCh <- err
-			}
-		}
-	}()
+	go migrateWaitlist(&wg, db, errorCh)
 
 	go func() {
 		defer wg.Done()
@@ -98,4 +75,27 @@ func checkTableExist(ctx context.Context, db *gorm.DB, tableName string) (bool, 
 	var response bool
 	_ = row.Scan(&response)
 	return response, nil
+}
+
+func migrateWaitlist(wg *sync.WaitGroup, db *gorm.DB, errorCh chan error) {
+	defer wg.Done()
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+	// check if table exist before creating
+	tableExist, err := checkTableExist(ctx, db, "waitlist")
+	if err != nil {
+		errorCh <- err
+	}
+	if !tableExist {
+		query := `CREATE TABLE waitlist (
+			id SERIAL PRIMARY KEY,
+			email VARCHAR(255) NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			);`
+		err := db.Exec(query).Error
+		if err != nil {
+			errorCh <- err
+		}
+	}
 }
