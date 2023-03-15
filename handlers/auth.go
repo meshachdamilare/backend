@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"quizard/constants"
 	"quizard/helpers"
 	"quizard/models"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/go-github/v39/github"
@@ -167,7 +167,11 @@ func (a *AuthHandler) GoogleOauthCallback(c *fiber.Ctx) error {
 
 func (a *AuthHandler) GoogleOauth(c *fiber.Ctx) error {
 	c.Set("Access-Control-Allow-Origin", "*")
-	state := strconv.FormatInt(rand.Int63(), 10)
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return helpers.Dispatch500Error(c, err)
+	}
+	state := base64.StdEncoding.EncodeToString(b)
 	url := googleoAuthConf.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	c.Cookie(&fiber.Cookie{Name: "oauthstate", Value: state})
 	c.Status(http.StatusTemporaryRedirect)
@@ -247,7 +251,11 @@ func (a *AuthHandler) GithubOauthCallback(c *fiber.Ctx) error {
 
 func (a *AuthHandler) GithubOauth(c *fiber.Ctx) error {
 	c.Set("Access-Control-Allow-Origin", "*")
-	state := strconv.FormatInt(rand.Int63(), 10)
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return helpers.Dispatch500Error(c, err)
+	}
+	state := base64.StdEncoding.EncodeToString(b)
 	url := githubOAuthConfig.AuthCodeURL(state)
 	c.Cookie(&fiber.Cookie{Name: "oauthstate", Value: state})
 	c.Status(http.StatusTemporaryRedirect)
