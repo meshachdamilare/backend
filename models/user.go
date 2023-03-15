@@ -8,3 +8,8 @@ type User struct {
 	Password string `json:"password"`
 	AvatarURL string `json:"avatar_url"`
 }
+
+type Waitlist struct {
+	Email string `json:"email"`
+	ID    uint   `gorm:"primarykey"`
+}

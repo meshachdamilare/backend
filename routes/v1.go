@@ -14,10 +14,11 @@ func welcome(c *fiber.Ctx) error {
 }
 
 func Routes(app *fiber.App, db *gorm.DB) {
-	apiURL := "/v1"
+	apiURL := "/api/v1"
 	router := app.Group(apiURL)
 	app.Get(apiURL, welcome)
 
 	registerUser(router, db)
 	registerAuth(router, db)
+	RegisterWaitlist(router, db)
 }

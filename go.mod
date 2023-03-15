@@ -3,9 +3,11 @@ module quizard
 go 1.19
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/go-github/v39 v39.2.0
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/crypto v0.6.0
 	golang.org/x/oauth2 v0.6.0
@@ -23,7 +25,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-github/v39 v39.2.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
