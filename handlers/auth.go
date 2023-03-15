@@ -12,8 +12,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/go-github/v39/github"
 	"golang.org/x/oauth2"
-	googleOauth "google.golang.org/api/oauth2/v2"
 	gitOauth "golang.org/x/oauth2/github"
+	googleOauth "google.golang.org/api/oauth2/v2"
+	"google.golang.org/api/option"
 	"gorm.io/gorm"
 )
 
@@ -111,7 +112,7 @@ func (a *AuthHandler) GoogleOauthCallback(c *fiber.Ctx) error {
 	}
 
 	client := googleoAuthConf.Client(c.Context(), token)
-	srv, err := googleOauth.New(client)
+	srv, err := googleOauth.NewService(c.Context(), option.WithHTTPClient(client))
 	if err != nil {
 		return helpers.Dispatch500Error(c, err)
 	}
