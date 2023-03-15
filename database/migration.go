@@ -44,6 +44,14 @@ func Migrate(db *gorm.DB) {
 				errorCh <- err
 			}
 		}
+		// add column avatar_url to users table
+		err = db.Exec(`
+			ALTER TABLE users
+			ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(255);
+		`).Error
+		if err != nil {
+			errorCh <- err
+		}
 	}()
 
 	go func() {

@@ -2,7 +2,6 @@ package routes
 
 import (
 	"quizard/handlers"
-	"quizard/validators"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -10,8 +9,7 @@ import (
 
 func registerUser(router fiber.Router, db *gorm.DB) {
 	userRouter := router.Group("users")
-
 	handler := handlers.NewUserHandler(db)
 
-	userRouter.Post("/register", validators.ValidateCreateUserSchema, handler.UserCreate)
+	userRouter.Get("/profile", handler.GetUserById)
 }

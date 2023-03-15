@@ -19,4 +19,5 @@ func Routes(app *fiber.App, db *gorm.DB) {
 	app.Get(apiURL, welcome)
 
 	registerUser(router, db)
+	registerAuth(router, db)
 }
