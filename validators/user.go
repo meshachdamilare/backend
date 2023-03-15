@@ -11,9 +11,12 @@ var Validator = validator.New()
 
 func ValidateRegisterUserSchema(c *fiber.Ctx) error {
 	body := new(helpers.InputCreateUser)
-  c.BodyParser(&body)
+  err := c.BodyParser(&body)
+	if err != nil {
+		return helpers.Dispatch400Error(c, "invalid payload", nil)
+	}
 
-	err := Validator.Struct(body)
+	err = Validator.Struct(body)
 	if err != nil {
 		return helpers.SchemaError(c, err)
 	}
