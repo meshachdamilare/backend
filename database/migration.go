@@ -21,7 +21,38 @@ func Migrate(db *gorm.DB) {
 	wg.Add(TOTAL_WORKERS)
 	log.Println("running db migration :::::::::::::")
 
-	go migrateWaitlist(&wg, db, errorCh)
+	go func() {
+		defer wg.Done()
+		ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+		defer cancel()
+		// check if table exist before creating
+		tableExist, err := checkTableExist(ctx, db, "users")
+		if err != nil {
+			errorCh <- err
+		}
+		if !tableExist {
+			query := `CREATE TABLE users (
+			id SERIAL PRIMARY KEY,
+			name VARCHAR(255) NOT NULL,
+			email VARCHAR(255) NOT NULL,
+			password VARCHAR(255) NOT NULL,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			);`
+			err := db.Exec(query).Error
+			if err != nil {
+				errorCh <- err
+			}
+		}
+		// add column avatar_url to users table
+		err = db.Exec(`
+			ALTER TABLE users
+			ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(255);
+		`).Error
+		if err != nil {
+			errorCh <- err
+		}
+	}()
 
 	go func() {
 		defer wg.Done()

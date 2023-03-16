@@ -3,9 +3,11 @@ package helpers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -54,4 +56,21 @@ func SchemaError(c *fiber.Ctx, err error) error {
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
+}
+
+// GenerateToken generates a jwt token
+func GenerateToken(JWTSecretKey, email, name string) (signedToken string, err error) {
+	claims := &AuthTokenJwtClaim{
+		Email: email,
+		Name: name,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err = token.SignedString([]byte(JWTSecretKey))
+	if err != nil {
+		return
+	}
+	return
 }
