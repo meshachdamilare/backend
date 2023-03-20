@@ -152,17 +152,13 @@ func (a *AuthHandler) GoogleOauthCallback(c *fiber.Ctx) error {
 		return helpers.Dispatch500Error(c, err)
 	}
 
-	c.Status(http.StatusOK)
-	return c.JSON(fiber.Map{
-		"success": true,
-		"message": "login user successfully",
-		"data": map[string]string{
-			"id":    fmt.Sprint(user.ID),
-			"email": user.Email,
-			"name":  user.Name,
-			"token": jwtToken,
-		},
-	})
+	c.Status(http.StatusPermanentRedirect)
+	c.Set("token", jwtToken)
+	c.Set("user_id", fmt.Sprint(user.ID))
+	c.Set("user_email", user.Email)
+	c.Set("user_name", user.Name)
+
+	return c.Redirect(constant.ClientOauthRedirectURL)
 }
 
 func (a *AuthHandler) GoogleOauth(c *fiber.Ctx) error {
@@ -236,17 +232,13 @@ func (a *AuthHandler) GithubOauthCallback(c *fiber.Ctx) error {
 		return helpers.Dispatch500Error(c, err)
 	}
 
-	c.Status(http.StatusOK)
-	return c.JSON(fiber.Map{
-		"success": true,
-		"message": "login user successfully",
-		"data": map[string]string{
-			"id":    fmt.Sprint(user.ID),
-			"email": user.Email,
-			"name":  user.Name,
-			"token": jwtToken,
-		},
-	})
+	c.Status(http.StatusPermanentRedirect)
+	c.Set("token", jwtToken)
+	c.Set("user_id", fmt.Sprint(user.ID))
+	c.Set("user_email", user.Email)
+	c.Set("user_name", user.Name)
+
+	return c.Redirect(constant.ClientOauthRedirectURL)
 }
 
 func (a *AuthHandler) GithubOauth(c *fiber.Ctx) error {

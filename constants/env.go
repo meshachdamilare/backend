@@ -9,21 +9,22 @@ import (
 )
 
 type Config struct {
-	Port                 string
-	Env                  string
-	ProjectID            string
-	GcsBucketName        string
-	DbHost               string
-	DbUser               string
-	DbPassword           string
-	DbName               string
-	DbPort               string
-	JWTSecretKey         string
-	GoogleClientID       string
-	GoogleClientSecret   string
-	GithubClientID       string
-	GithubClientSecret   string
-	OAuthRedirectBaseURL string
+	Port                   string
+	Env                    string
+	ProjectID              string
+	GcsBucketName          string
+	DbHost                 string
+	DbUser                 string
+	DbPassword             string
+	DbName                 string
+	DbPort                 string
+	JWTSecretKey           string
+	GoogleClientID         string
+	GoogleClientSecret     string
+	GithubClientID         string
+	GithubClientSecret     string
+	OAuthRedirectBaseURL   string
+	ClientOauthRedirectURL string
 }
 
 var projectDirName = "quizard-backend"
@@ -54,6 +55,7 @@ func New() *Config {
 		GithubClientID:       getEnv("GITHUB_CLIENT_ID", ""),
 		GithubClientSecret:   getEnv("GITHUB_CLIENT_SECRET", ""),
 		OAuthRedirectBaseURL: getEnv("OAUTH_REDIRECT_BASE_URL", ""),
+		ClientOauthRedirectURL: getEnv("CLIENT_OAUTH_REDIRECT_URL", ""),
 	}
 }
 
