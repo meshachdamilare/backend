@@ -62,7 +62,7 @@ func HashPassword(password string) (string, error) {
 func GenerateToken(JWTSecretKey, email, name string) (signedToken string, err error) {
 	claims := &AuthTokenJwtClaim{
 		Email: email,
-		Name: name,
+		Name:  name,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
 		},
