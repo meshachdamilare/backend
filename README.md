@@ -61,8 +61,8 @@ make start
 ## Production
 
 ```bash
-docker build -t gofiber .
-docker run -d -p 3000:3000 gofiber ./app -prod
+docker build -t quizzard-api .
+docker run --env-file .env -p 3006:3006 --name quizzard quizzard-api
 ```
 
 Go to http://localhost:3000:
