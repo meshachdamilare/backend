@@ -34,27 +34,29 @@ func init() {
 	currentWorkDirectory, _ := os.Getwd()
 	rootPath := projectName.Find([]byte(currentWorkDirectory))
 
-	err := godotenv.Load(string(rootPath) + `/.env`)
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
+	envFile := string(rootPath) + `/.env`
+	if _, err := os.Stat(envFile); err == nil {
+		err = godotenv.Load(envFile)
+		if err != nil {
+			log.Fatalf("error loading .env file")
+		}
 	}
 }
 
 func New() *Config {
 	return &Config{
-		DbHost:               getEnv("DB_HOST", ""),
-		DbUser:               getEnv("DB_USER", ""),
-		DbPassword:           getEnv("DB_PASSWORD", ""),
-		DbName:               getEnv("DB_NAME", ""),
-		DbPort:               getEnv("DB_PORT", ""),
-		Port:                 getEnv("PORT", ""),
-		JWTSecretKey:         getEnv("JWT_SCECRET", ""),
-		GoogleClientID:       getEnv("GOOGLE_CLIENT_ID", ""),
-		GoogleClientSecret:   getEnv("GOOGLE_CLIENT_SECRET", ""),
-		GithubClientID:       getEnv("GITHUB_CLIENT_ID", ""),
-		GithubClientSecret:   getEnv("GITHUB_CLIENT_SECRET", ""),
-		OAuthRedirectBaseURL: getEnv("OAUTH_REDIRECT_BASE_URL", ""),
+		DbHost:                 getEnv("DB_HOST", ""),
+		DbUser:                 getEnv("DB_USER", ""),
+		DbPassword:             getEnv("DB_PASSWORD", ""),
+		DbName:                 getEnv("DB_NAME", ""),
+		DbPort:                 getEnv("DB_PORT", ""),
+		Port:                   getEnv("PORT", ""),
+		JWTSecretKey:           getEnv("JWT_SCECRET", ""),
+		GoogleClientID:         getEnv("GOOGLE_CLIENT_ID", ""),
+		GoogleClientSecret:     getEnv("GOOGLE_CLIENT_SECRET", ""),
+		GithubClientID:         getEnv("GITHUB_CLIENT_ID", ""),
+		GithubClientSecret:     getEnv("GITHUB_CLIENT_SECRET", ""),
+		OAuthRedirectBaseURL:   getEnv("OAUTH_REDIRECT_BASE_URL", ""),
 		ClientOauthRedirectURL: getEnv("CLIENT_OAUTH_REDIRECT_URL", ""),
 	}
 }
